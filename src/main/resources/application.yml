@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:hsqldb:file:hsqldb/db
+    driverClassName: org.hsqldb.jdbc.JDBCDriver
+    username: sa 
+    password: 
+  jpa:
+    database-platform: org.hibernate.dialect.HSQLDialect
+    hibernate:
+      ddl-auto: update
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+      properties:
+        spring.mvc.view.taglib-resolver-org.springframework.web.servlet.tags.JstlTabLibraryResolver: true
