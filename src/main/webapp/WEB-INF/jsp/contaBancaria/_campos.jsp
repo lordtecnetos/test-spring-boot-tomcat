@@ -11,7 +11,12 @@
     <form:label path="nome">Nome: </form:label>
     <form:input type="text" path="nome" required="required" />
 </div>
-<div>
-    <form:label path="codigoBanco">Banco: </form:label>
-    <form:select path="codigoBanco" items="${bancos}" itemValue="value" itemLabel="label" required="required" />
+<div id="autocomplete-banco">
+    <form:label path="nomeBanco">Banco: </form:label>
+    <form:hidden path="codigoBanco" class="autocomplete-value" />
+    <form:input type="text" path="nomeBanco" class="autocomplete-label"
+        data-url-autocomplete="/banco/autocomplete?ativos=true"
+        onkeyup="window.autocomplete(this)" 
+        required="required" />
+    <div class="autocomplete-body"></div>
 </div>

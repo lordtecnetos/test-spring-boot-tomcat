@@ -14,3 +14,5 @@
 </form:form>
 
 <form:form id="excluir" action="/conta-bancaria/excluir/${form.codigo}" method="delete" />
+
+<script src="/resources/js/main.js"></script>

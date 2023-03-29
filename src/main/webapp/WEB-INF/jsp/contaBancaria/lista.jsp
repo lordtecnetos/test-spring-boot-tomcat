@@ -26,7 +26,9 @@
                 <td>
                     <c:out value="${dto.ativo ? 'Ativa' : 'Inativa'}" />
                 </td>
-                <td><a href="/conta-bancaria/visualizar/${dto.codigo}">Editar</a></td>
+                <td>
+                    <a href="/conta-bancaria/visualizar/${dto.codigo}">Editar</a>
+                </td>
             </tr>
         </c:forEach>
         <c:if test="${empty dtos}">

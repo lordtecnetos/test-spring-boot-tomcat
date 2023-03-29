@@ -11,3 +11,5 @@
         <button type="submit">Salvar</button>
     </div>
 </form:form>
+
+<script src="/resources/js/main.js"></script>

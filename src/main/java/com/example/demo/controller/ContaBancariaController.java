@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.demo.component.BancoComponent;
 import com.example.demo.component.ContaBancariaComponent;
 import com.example.demo.form.ContaBancariaForm;
 
@@ -22,11 +21,10 @@ import lombok.RequiredArgsConstructor;
 public class ContaBancariaController {
 
     private final ContaBancariaComponent component;
-    private final BancoComponent bancoComponent;
 
     @ModelAttribute
     public void addAttributes(Model model) {
-        model.addAttribute("bancos", bancoComponent.autocomplete(true));
+        // model.addAttribute("bancos", bancoComponent.autocomplete(true));
     }
 
     @GetMapping("/novo")
@@ -44,7 +42,7 @@ public class ContaBancariaController {
     @GetMapping("/visualizar/{codigo}")
     public String visualizar(@PathVariable Long codigo, Model model) {
         model.addAttribute("form", component.visualizar(codigo).orElseThrow());
-        return "contaBancaria/visualizar";
+        return "contaBancaria/visualiza";
     }
 
     @PostMapping("/salvar")
