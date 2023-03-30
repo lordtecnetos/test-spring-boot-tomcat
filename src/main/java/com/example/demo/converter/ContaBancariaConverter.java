@@ -9,15 +9,6 @@ import com.example.demo.model.ContaBancaria;
 @Component
 public class ContaBancariaConverter {
 
-    public ContaBancaria toEntidade(ContaBancariaForm form) {
-        var entidade = new ContaBancaria();
-        entidade.setCodigo(form.getCodigo());
-        entidade.setNome(form.getNome());
-        entidade.setAtivo(form.isAtivo());
-        entidade.setBanco(new Banco(form.getCodigoBanco()));
-        return entidade;
-    }
-
     public ContaBancariaForm toForm(ContaBancaria entidade) {
         var form = new ContaBancariaForm();
         form.setCodigo(entidade.getCodigo());
@@ -26,6 +17,15 @@ public class ContaBancariaConverter {
         form.setCodigoBanco(entidade.getBanco().getCodigo());
         form.setNomeBanco(entidade.getBanco().getNome());
         return form;
+    }
+
+    public ContaBancaria toEntidade(ContaBancariaForm form) {
+        var entidade = new ContaBancaria();
+        entidade.setCodigo(form.getCodigo());
+        entidade.setNome(form.getNome());
+        entidade.setAtivo(form.isAtivo());
+        entidade.setBanco(new Banco(form.getCodigoBanco()));
+        return entidade;
     }
 
 }

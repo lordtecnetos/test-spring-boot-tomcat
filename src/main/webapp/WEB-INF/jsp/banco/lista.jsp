@@ -3,13 +3,12 @@
 
 <title>Lista</title>
 
-<a href="/conta-bancaria/novo">Adicionar</a>
+<a href="/banco/novo">Adicionar</a>
 
 <table>
     <thead>
         <tr>
             <th>Nome</th>
-            <th>Banco</th>
             <th>Situação</th>
             <th>Opções</th>
         </tr>
@@ -21,13 +20,10 @@
                     <c:out value="${dto.nome}" />
                 </td>
                 <td>
-                    <c:out value="${dto.nomeBanco}" />
+                    <c:out value="${dto.ativo ? 'Ativo' : 'Inativo'}" />
                 </td>
                 <td>
-                    <c:out value="${dto.ativo ? 'Ativa' : 'Inativa'}" />
-                </td>
-                <td>
-                    <a href="/conta-bancaria/visualizar/${dto.codigo}">Editar</a>
+                    <a href="/banco/visualizar/${dto.codigo}">Editar</a>
                 </td>
             </tr>
         </c:forEach>

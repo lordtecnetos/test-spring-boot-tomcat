@@ -4,7 +4,7 @@
 
 <form:errors path="*" />
 <div>
-    <form:label path="ativo">Ativo: </form:label>
+    <form:label path="ativo">Ativa: </form:label>
     <form:checkbox path="ativo" />
 </div>
 <div>

@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.CrudServiceImpl;
+import com.example.demo.dto.BancoDTO;
 import com.example.demo.dto.LabelValue;
 import com.example.demo.model.Banco;
 
@@ -16,8 +18,13 @@ class BancoServiceImpl extends CrudServiceImpl<Banco, BancoRepository> implement
     }
 
     @Override
-    public List<LabelValue> listarAtivosParaAutocomplete(Boolean ativos) {
-        return repository.findAutocompleteByAtivos(ativos);
+    public List<BancoDTO> listarDTO() {
+        return repository.findAllDTO();
+    }
+
+    @Override
+    public List<LabelValue> listarLabelValue(String nome, Boolean ativos) {
+        return repository.findByNomeLikeAndAtivo(nome, ativos);
     }
 
 }
