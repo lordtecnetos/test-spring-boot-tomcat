@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import java.io.Serializable;
+import com.example.demo.EntidadePersistente;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "BANCO")
 @EqualsAndHashCode(of = "codigo")
-public class Banco implements Serializable {
+public class Banco implements EntidadePersistente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
