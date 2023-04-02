@@ -30,7 +30,12 @@ public abstract class CrudServiceImpl<T extends EntidadePersistente, R extends J
     @Override
     public T inserir(T entidade) {
         this.antesInserir(entidade);
-        repository.saveAndFlush(entidade);
+        try {
+            repository.saveAndFlush(entidade);
+
+        } catch (Exception e) {
+            throw new ServiceException(e, e.getMessage());
+        }
         this.depoisInserir(entidade);
         return entidade;
     }
@@ -55,7 +60,12 @@ public abstract class CrudServiceImpl<T extends EntidadePersistente, R extends J
     @Override
     public T alterar(T entidade) {
         this.antesAlterar(entidade);
-        repository.saveAndFlush(entidade);
+        try {
+            repository.saveAndFlush(entidade);
+
+        } catch (Exception e) {
+            throw new ServiceException(e, e.getMessage());
+        }
         this.depoisAlterar(entidade);
         return entidade;
     }
@@ -71,8 +81,13 @@ public abstract class CrudServiceImpl<T extends EntidadePersistente, R extends J
     @Override
     public void excluir(T entidade) {
         this.antesExcluir(entidade);
-        repository.delete(entidade);
-        repository.flush();
+        try {
+            repository.delete(entidade);
+            repository.flush();
+
+        } catch (Exception e) {
+            throw new ServiceException(e, e.getMessage());
+        }
         this.depoisExcluir(entidade);
     }
 

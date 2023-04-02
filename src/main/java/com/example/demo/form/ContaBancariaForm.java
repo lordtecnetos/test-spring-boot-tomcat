@@ -2,7 +2,7 @@ package com.example.demo.form;
 
 import java.io.Serializable;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ public class ContaBancariaForm implements Serializable {
 
     private Long codigo;
 
-    @NotEmpty
+    @NotBlank
     private String nome;
 
     private boolean ativo;

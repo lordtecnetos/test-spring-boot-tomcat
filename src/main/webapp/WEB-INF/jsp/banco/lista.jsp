@@ -3,6 +3,8 @@
 
 <title>Lista</title>
 
+<div>${success}</div>
+
 <a href="/banco/novo">Adicionar</a>
 
 <table>
