@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.demo.ServiceException;
 import com.example.demo.component.ContaBancariaComponent;
 import com.example.demo.form.ContaBancariaForm;
 
@@ -50,8 +51,14 @@ public class ContaBancariaController {
         if (result.hasErrors()) {
             return "contaBancaria/novo";
         }
-        component.salvar(form);
-        return "redirect:/conta-bancaria/listar";
+        try {
+            component.salvar(form);
+            return "redirect:/conta-bancaria/listar";
+
+        } catch (ServiceException e) {
+            result.reject("error", e.getMessage());
+            return "contaBancaria/novo";
+        }
     }
 
     @PostMapping("/alterar/{codigo}")
