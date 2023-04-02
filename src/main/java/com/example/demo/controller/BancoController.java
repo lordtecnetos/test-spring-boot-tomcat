@@ -66,7 +66,7 @@ public class BancoController {
     }
 
     @PostMapping("/alterar/{codigo}")
-    public String alterar(@ModelAttribute("form") BancoForm form, Model model, BindingResult result,
+    public String alterar(@ModelAttribute("form") BancoForm form, BindingResult result,
             RedirectAttributes redirect) {
         if (result.hasErrors()) {
             return "banco/visualiza";
@@ -83,7 +83,7 @@ public class BancoController {
     }
 
     @PostMapping("/excluir/{codigo}")
-    public String excluir(@PathVariable Long codigo, Model model, RedirectAttributes redirect) {
+    public String excluir(@PathVariable Long codigo, RedirectAttributes redirect) {
         try {
             component.excluir(codigo);
             redirect.addFlashAttribute("success", "Excluído com sucesso!");
