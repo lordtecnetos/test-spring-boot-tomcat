@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.CrudServiceImpl;
 import com.example.demo.ServiceException;
 import com.example.demo.dto.ContaBancariaDTO;
+import com.example.demo.model.Banco;
 import com.example.demo.model.ContaBancaria;
 
 @Service
@@ -23,7 +24,7 @@ class ContaBancariaServiceImpl extends CrudServiceImpl<ContaBancaria, ContaBanca
     @Override
     protected void antesInserir(ContaBancaria entidade) {
         var banco = bancoService.buscar(entidade.getBanco().getCodigo())
-                .orElseThrow(() -> new ServiceException("banco.not.found"));
+                .orElseThrow(ServiceException.notFound(Banco.class));
         if (!banco.isAtivo()) {
             throw new ServiceException("erro.banco.inativo");
         }

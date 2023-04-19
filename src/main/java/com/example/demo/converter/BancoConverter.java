@@ -10,6 +10,17 @@ import com.example.demo.model.Banco;
 @Component
 public class BancoConverter implements Serializable {
 
+    public Banco toEntidade(BancoForm form) {
+        return this.toEntidade(form, new Banco());
+    }
+
+    public Banco toEntidade(BancoForm form, Banco entidade) {
+        entidade.setCodigo(form.getCodigo());
+        entidade.setNome(form.getNome());
+        entidade.setAtivo(form.isAtivo());
+        return entidade;
+    }
+
     public BancoForm toForm(Banco entidade) {
         var form = new BancoForm();
         form.setCodigo(entidade.getCodigo());
@@ -18,12 +29,4 @@ public class BancoConverter implements Serializable {
         return form;
     }
 
-    public Banco toEntidade(BancoForm form) {
-        var entidade = new Banco();
-        entidade.setCodigo(form.getCodigo());
-        entidade.setNome(form.getNome());
-        entidade.setAtivo(form.isAtivo());
-        return entidade;
-    }
- 
 }

@@ -5,9 +5,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
+import com.example.demo.ServiceException;
 import com.example.demo.converter.ContaBancariaConverter;
 import com.example.demo.dto.ContaBancariaDTO;
 import com.example.demo.form.ContaBancariaForm;
+import com.example.demo.model.Banco;
+import com.example.demo.model.ContaBancaria;
 import com.example.demo.service.ContaBancariaService;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +41,8 @@ public class ContaBancariaComponent {
     }
 
     public void alterar(ContaBancariaForm form) {
-        service.alterar(converter.toEntidade(form));
+        var entidade = service.buscar(form.getCodigo()).orElseThrow(ServiceException.notFound(ContaBancaria.class));
+        service.alterar(converter.toEntidade(form, entidade));
     }
 
     public void excluir(Long codigo) {

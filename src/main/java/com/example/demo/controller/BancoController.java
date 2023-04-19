@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.ServiceException;
@@ -44,8 +46,9 @@ public class BancoController {
 
     @GetMapping("/visualizar/{codigo}")
     public String visualizar(@PathVariable Long codigo, Model model) {
-        model.addAttribute("form", component.visualizar(codigo).orElseThrow());
-        return "banco/visualiza";
+        model.addAttribute("form",
+                component.visualizar(codigo).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
+        return "banco/visualizar";
     }
 
     @PostMapping("/salvar")
@@ -57,7 +60,7 @@ public class BancoController {
         try {
             component.salvar(form);
             redirect.addFlashAttribute("success", "Salvo com sucesso!");
-            return "redirect:/banco/listar";
+            return "redirect:listar";
 
         } catch (ServiceException e) {
             result.reject("error", e.getMessage());
@@ -69,16 +72,16 @@ public class BancoController {
     public String alterar(@ModelAttribute("form") BancoForm form, BindingResult result,
             RedirectAttributes redirect) {
         if (result.hasErrors()) {
-            return "banco/visualiza";
+            return "banco/visualizar";
         }
         try {
             component.alterar(form);
             redirect.addFlashAttribute("success", "Alterado com sucesso!");
-            return "redirect:/banco/listar";
+            return "redirect:../listar";
 
         } catch (ServiceException e) {
             result.reject("error", e.getMessage());
-            return "banco/visualiza";
+            return "banco/visualizar";
         }
     }
 
@@ -87,11 +90,11 @@ public class BancoController {
         try {
             component.excluir(codigo);
             redirect.addFlashAttribute("success", "Excluído com sucesso!");
-            return "redirect:/banco/listar";
+            return "redirect:../listar";
 
         } catch (ServiceException e) {
             redirect.addFlashAttribute("error", e.getMessage());
-            return "redirect:/banco/visualizar/{codigo}";
+            return "redirect:../visualizar/{codigo}";
         }
     }
 

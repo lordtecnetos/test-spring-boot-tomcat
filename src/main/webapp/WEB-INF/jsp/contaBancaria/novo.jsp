@@ -4,6 +4,8 @@
 
 <title>Adicionar</title>
 
+<div>${error}</div>
+
 <form:form action="/conta-bancaria/salvar" method="post" modelAttribute="form">
     <c:import url="_campos.jsp" />
     <div>

@@ -6,9 +6,9 @@
 <div>Menus</div>
 
 <div>
-    <a href="/conta-bancaria/listar">Contas</a>
+    <a href="/banco/listar">Bancos</a>
 </div>
 
 <div>
-    <a href="/banco/listar">Bancos</a>
+    <a href="/conta-bancaria/listar">Contas</a>
 </div>

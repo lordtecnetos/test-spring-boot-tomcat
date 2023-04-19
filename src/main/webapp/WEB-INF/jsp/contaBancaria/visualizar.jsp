@@ -4,6 +4,8 @@
 
 <title>Editar</title>
 
+<div>${error}</div>
+
 <form:form action="/conta-bancaria/alterar/${form.codigo}" method="put" modelAttribute="form">
     <c:import url="_campos.jsp" />
     <div>

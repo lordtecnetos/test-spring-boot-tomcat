@@ -3,6 +3,8 @@
 
 <title>Lista</title>
 
+<div>${success}</div>
+
 <a href="/conta-bancaria/novo">Adicionar</a>
 
 <table>
