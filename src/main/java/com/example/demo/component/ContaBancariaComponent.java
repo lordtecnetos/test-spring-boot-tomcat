@@ -9,7 +9,6 @@ import com.example.demo.ServiceException;
 import com.example.demo.converter.ContaBancariaConverter;
 import com.example.demo.dto.ContaBancariaDTO;
 import com.example.demo.form.ContaBancariaForm;
-import com.example.demo.model.Banco;
 import com.example.demo.model.ContaBancaria;
 import com.example.demo.service.ContaBancariaService;
 
