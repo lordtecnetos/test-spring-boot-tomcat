@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.MessagesComponent;
 import com.example.demo.ServiceException;
 import com.example.demo.component.BancoComponent;
 import com.example.demo.dto.LabelValue;
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/banco")
 public class BancoController {
 
+    private final MessagesComponent messages;
     private final BancoComponent component;
 
     @GetMapping("/novo")
@@ -59,12 +61,26 @@ public class BancoController {
         }
         try {
             component.salvar(form);
-            redirect.addFlashAttribute("success", "Salvo com sucesso!");
+            messages.success(redirect, "salvo.com.sucesso");
             return "redirect:listar";
 
         } catch (ServiceException e) {
-            result.reject("error", e.getMessage());
+            messages.error(result, e);
             return "banco/novo";
+        }
+    }
+
+    @PostMapping("/salvar")
+    public @ResponseBody MessagesComponent.Message salvarJson(@ModelAttribute("form") @Valid BancoForm form,
+            BindingResult result) {
+        messages.validate(result);
+
+        try {
+            component.salvar(form);
+            return messages.success("salvo.com.sucesso");
+
+        } catch (ServiceException e) {
+            throw messages.error(e);
         }
     }
 
