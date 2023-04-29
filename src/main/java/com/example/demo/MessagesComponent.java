@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Component
 @RequiredArgsConstructor
@@ -112,6 +113,7 @@ public class MessagesComponent {
     // -- Classes
 
     @Getter
+    @ToString
     @EqualsAndHashCode
     @RequiredArgsConstructor
     public static class Message {
