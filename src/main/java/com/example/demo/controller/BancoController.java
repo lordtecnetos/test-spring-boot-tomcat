@@ -54,9 +54,11 @@ public class BancoController {
     }
 
     @PostMapping("/salvar")
-    public String salvar(@ModelAttribute("form") @Valid BancoForm form, BindingResult result,
+    public String salvar(@ModelAttribute("form") @Valid BancoForm form, Model model, BindingResult result,
             RedirectAttributes redirect) {
+
         if (result.hasErrors()) {
+            messages.error(model, result);
             return "banco/novo";
         }
         try {
@@ -65,16 +67,19 @@ public class BancoController {
             return "redirect:listar";
 
         } catch (ServiceException e) {
-            messages.error(result, e);
+            messages.error(model, e);
             return "banco/novo";
         }
+
     }
 
-    @PostMapping("/salvar")
+    @PostMapping("/salvar-json")
     public @ResponseBody MessagesComponent.Message salvarJson(@ModelAttribute("form") @Valid BancoForm form,
             BindingResult result) {
-        messages.validate(result);
 
+        if (result.hasErrors()) {
+            throw messages.error(result);
+        }
         try {
             component.salvar(form);
             return messages.success("salvo.com.sucesso");

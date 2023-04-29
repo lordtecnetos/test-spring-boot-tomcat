@@ -1,10 +1,15 @@
 package com.example.demo;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -19,29 +24,53 @@ public class MessagesComponent {
 
     private final MessageSource messageSource;
 
-    public void success(RedirectAttributes redirect, String code, Object... args) {
-        this.message(redirect, SUCCESS, code, args);
+    // -- Model
+
+    public void success(Model model, String code, Object... args) {
+        this.message(model, SUCCESS, code, args);
     }
 
-    public void error(RedirectAttributes redirect, String code, Object... args) {
-        this.message(redirect, ERROR, code, args);
+    public void error(Model model, String code, Object... args) {
+        this.message(model, ERROR, code, args);
     }
 
-    public void error(BindingResult result, ServiceException e) {
-        result.reject(e.getMessage(), e.getArgs(), e.getMessage());
+    public void error(Model model, BindingResult result) {
+        result.getAllErrors().forEach(e -> this.error(model, e.getCode(), e.getArguments()));
     }
 
-    public void warning(RedirectAttributes redirect, String code, Object... args) {
-        this.message(redirect, WARNING, code, args);
+    public void error(Model model, ServiceException e) {
+        this.error(model, e.getMessage(), e.getArgs());
     }
 
-    public void info(RedirectAttributes redirect, String code, Object... args) {
-        this.message(redirect, INFO, code, args);
+    // public void reject(BindingResult result, ServiceException e) {
+    //     result.reject(e.getMessage(), e.getArgs(), e.getMessage());
+    // }
+
+    public void warning(Model model, String code, Object... args) {
+        this.message(model, WARNING, code, args);
     }
 
-    public void message(RedirectAttributes redirect, String type, String code, Object... args) {
-        this.message(type, code, args).addTo(redirect);
+    public void info(Model model, String code, Object... args) {
+        this.message(model, INFO, code, args);
     }
+
+    public void message(Model model, String type, String code, Object... args) {
+        var message = this.message(type, code, args);
+        var messages = new HashSet<Message>();
+        if (model.containsAttribute(type)) {
+            messages.addAll((Set<Message>) model.getAttribute(type));
+        }
+        messages.add(message);
+
+        if (model instanceof RedirectAttributes) {
+            var redirect = (RedirectAttributes) model;
+            redirect.addFlashAttribute(type, messages);
+        } else {
+            model.addAttribute(type, messages);
+        }
+    }
+
+    // -- Returns Message
 
     public Message success(String code, Object... args) {
         return this.message(SUCCESS, code, args);
@@ -49,10 +78,6 @@ public class MessagesComponent {
 
     public Message error(String code, Object... args) {
         return this.message(ERROR, code, args);
-    }
-
-    public MessageException error(ServiceException e) {
-        return new MessageException(e, this.error(e.getMessage(), e.getArgs()));
     }
 
     public Message warning(String code, Object... args) {
@@ -63,31 +88,36 @@ public class MessagesComponent {
         return this.message(INFO, code, args);
     }
 
-    public void validate(BindingResult result) {
-        if (result.hasErrors()) {
-            throw new MessageException(result.getAllErrors().stream().map(e -> error(e.getCode(), e.getArguments()))
-                    .toArray(Message[]::new));
-        }
-    }
-
     public Message message(String type, String code, Object... args) {
         return new Message(type, i18n(code, args));
     }
+
+    // -- Returns Exception
+
+    public MessageException error(ServiceException e) {
+        return new MessageException(e, this.error(e.getMessage(), e.getArgs()));
+    }
+
+    public MessageException error(BindingResult result) {
+        return new MessageException(result.getAllErrors().stream().map(e -> this.error(e.getCode(), e.getArguments()))
+                .toArray(Message[]::new));
+    }
+
+    // -- Source
 
     public String i18n(String code, Object... args) {
         return messageSource.getMessage(code, args, code, null);
     }
 
+    // -- Classes
+
     @Getter
+    @EqualsAndHashCode
     @RequiredArgsConstructor
     public static class Message {
 
         private final String type;
         private final String value;
-
-        public void addTo(RedirectAttributes redirect) {
-            redirect.addFlashAttribute(type, this);
-        }
 
     }
 
