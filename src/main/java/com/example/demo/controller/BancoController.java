@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.demo.MessagesComponent;
 import com.example.demo.ServiceException;
 import com.example.demo.component.BancoComponent;
 import com.example.demo.dto.LabelValue;
 import com.example.demo.form.BancoForm;
+import com.example.demo.view.component.MessagesComponent;
+import com.example.demo.view.model.Message;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,8 +55,8 @@ public class BancoController {
     }
 
     @PostMapping("/salvar")
-    public String salvar(@ModelAttribute("form") @Valid BancoForm form, Model model, BindingResult result,
-            RedirectAttributes redirect) {
+    public String salvar(@ModelAttribute("form") @Valid BancoForm form, BindingResult result,
+            Model model, RedirectAttributes redirect) {
 
         if (result.hasErrors()) {
             messages.error(model, result);
@@ -74,7 +75,7 @@ public class BancoController {
     }
 
     @PostMapping("/salvar-json")
-    public @ResponseBody MessagesComponent.Message salvarJson(@ModelAttribute("form") @Valid BancoForm form,
+    public @ResponseBody Message salvarJson(@ModelAttribute("form") @Valid BancoForm form,
             BindingResult result) {
 
         if (result.hasErrors()) {

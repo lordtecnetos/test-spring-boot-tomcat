@@ -25,7 +25,7 @@ public class Banco implements EntidadePersistente {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long codigo;
 
-    @Column(nullable = false)
+    @Column(length = 100, nullable = false)
     private String nome;
 
     @Column(nullable = false)

@@ -3,7 +3,11 @@
 
 <title>Lista</title>
 
-<div>${success}</div>
+<c:forEach var="msg" items="${successList}">
+    <div>
+        <c:out value="${msg.value}" />
+    </div>
+</c:forEach>
 
 <a href="/banco/novo">Adicionar</a>
 

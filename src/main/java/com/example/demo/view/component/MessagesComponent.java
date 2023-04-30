@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.view.component;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,19 +9,20 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import com.example.demo.ServiceException;
+import com.example.demo.view.exception.MessageException;
+import com.example.demo.view.model.Message;
+
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 @Component
 @RequiredArgsConstructor
 public class MessagesComponent {
 
-    public static final String SUCCESS = "success";
-    public static final String ERROR = "error";
-    public static final String WARNING = "warning";
-    public static final String INFO = "info";
+    public static final String SUCCESS = "successList";
+    public static final String ERROR = "errorList";
+    public static final String WARNING = "warningList";
+    public static final String INFO = "infoList";
 
     private final MessageSource messageSource;
 
@@ -36,16 +37,12 @@ public class MessagesComponent {
     }
 
     public void error(Model model, BindingResult result) {
-        result.getAllErrors().forEach(e -> this.error(model, e.getCode(), e.getArguments()));
+        result.getAllErrors().forEach(e -> this.error(model, e.getDefaultMessage(), e.getArguments()));
     }
 
     public void error(Model model, ServiceException e) {
         this.error(model, e.getMessage(), e.getArgs());
     }
-
-    // public void reject(BindingResult result, ServiceException e) {
-    //     result.reject(e.getMessage(), e.getArgs(), e.getMessage());
-    // }
 
     public void warning(Model model, String code, Object... args) {
         this.message(model, WARNING, code, args);
@@ -108,35 +105,6 @@ public class MessagesComponent {
 
     public String i18n(String code, Object... args) {
         return messageSource.getMessage(code, args, code, null);
-    }
-
-    // -- Classes
-
-    @Getter
-    @ToString
-    @EqualsAndHashCode
-    @RequiredArgsConstructor
-    public static class Message {
-
-        private final String type;
-        private final String value;
-
-    }
-
-    @Getter
-    public static class MessageException extends RuntimeException {
-
-        private final Message[] messages;
-
-        public MessageException(Throwable e, Message... messages) {
-            super(e);
-            this.messages = messages;
-        }
-
-        public MessageException(Message... messages) {
-            this.messages = messages;
-        }
-
     }
 
 }

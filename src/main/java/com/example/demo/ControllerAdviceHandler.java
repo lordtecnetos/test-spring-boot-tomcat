@@ -6,12 +6,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.example.demo.view.exception.MessageException;
+import com.example.demo.view.model.Message;
+
 @ControllerAdvice
 public class ControllerAdviceHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MessagesComponent.MessageException.class)
-    public @ResponseBody MessagesComponent.Message[] handle(MessagesComponent.MessageException e) {
+    @ExceptionHandler(MessageException.class)
+    public @ResponseBody Message[] handle(MessageException e) {
         return e.getMessages();
     }
 
