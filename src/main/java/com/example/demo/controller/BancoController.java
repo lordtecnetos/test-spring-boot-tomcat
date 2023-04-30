@@ -64,14 +64,13 @@ public class BancoController {
         }
         try {
             component.salvar(form);
-            messages.success(redirect, "salvo.com.sucesso");
+            messages.success(redirect, "banco.salvo.com.sucesso");
             return "redirect:listar";
 
         } catch (ServiceException e) {
             messages.error(model, e);
             return "banco/novo";
         }
-
     }
 
     @PostMapping("/salvar-json")
@@ -92,17 +91,19 @@ public class BancoController {
 
     @PostMapping("/alterar/{codigo}")
     public String alterar(@ModelAttribute("form") BancoForm form, BindingResult result,
-            RedirectAttributes redirect) {
+            Model model, RedirectAttributes redirect) {
+
         if (result.hasErrors()) {
+            messages.error(model, result);
             return "banco/visualizar";
         }
         try {
             component.alterar(form);
-            redirect.addFlashAttribute("success", "Alterado com sucesso!");
+            messages.success(redirect, "banco.alterado.com.sucesso");
             return "redirect:../listar";
 
         } catch (ServiceException e) {
-            result.reject("error", e.getMessage());
+            messages.error(model, e);
             return "banco/visualizar";
         }
     }
@@ -111,11 +112,11 @@ public class BancoController {
     public String excluir(@PathVariable Long codigo, RedirectAttributes redirect) {
         try {
             component.excluir(codigo);
-            redirect.addFlashAttribute("success", "Excluído com sucesso!");
+            messages.success(redirect, "banco.excluido.com.sucesso");
             return "redirect:../listar";
 
         } catch (ServiceException e) {
-            redirect.addFlashAttribute("error", e.getMessage());
+            messages.error(redirect, e);
             return "redirect:../visualizar/{codigo}";
         }
     }

@@ -2,8 +2,6 @@ package com.example.demo.form;
 
 import java.io.Serializable;
 
-import org.hibernate.validator.constraints.Length;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -17,8 +15,8 @@ public class BancoForm implements Serializable {
 
     private Long codigo;
 
-    @Size(max = 100, message = "erro.bancoform.nome.size")
-    @NotBlank(message = "erro.bancoform.nome.notblank")
+    @Size(min = 1, max = 100, message = "erro.banco.nome.size")
+    @NotBlank(message = "erro.banco.nome.notblank")
     private String nome;
 
     private boolean ativo;

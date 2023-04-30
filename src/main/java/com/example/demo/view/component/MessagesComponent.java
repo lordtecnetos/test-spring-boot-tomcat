@@ -1,12 +1,16 @@
 package com.example.demo.view.component;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.ServiceException;
@@ -19,10 +23,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MessagesComponent {
 
-    public static final String SUCCESS = "successList";
-    public static final String ERROR = "errorList";
-    public static final String WARNING = "warningList";
-    public static final String INFO = "infoList";
+    public static final String SUCCESS = "success";
+    public static final String ERROR = "error";
+    public static final String WARNING = "warning";
+    public static final String INFO = "info";
 
     private final MessageSource messageSource;
 
@@ -37,7 +41,7 @@ public class MessagesComponent {
     }
 
     public void error(Model model, BindingResult result) {
-        result.getAllErrors().forEach(e -> this.error(model, e.getDefaultMessage(), e.getArguments()));
+        result.getAllErrors().stream().forEach(e -> this.message(model, this.error(e)));
     }
 
     public void error(Model model, ServiceException e) {
@@ -54,18 +58,29 @@ public class MessagesComponent {
 
     public void message(Model model, String type, String code, Object... args) {
         var message = this.message(type, code, args);
-        var messages = new HashSet<Message>();
-        if (model.containsAttribute(type)) {
-            messages.addAll((Set<Message>) model.getAttribute(type));
-        }
-        messages.add(message);
+        this.message(model, message);
+    }
 
+    public void message(Model model, Message message) {
         if (model instanceof RedirectAttributes) {
             var redirect = (RedirectAttributes) model;
-            redirect.addFlashAttribute(type, messages);
+            this.addOnMap(message, redirect::getFlashAttributes, redirect::addFlashAttribute);
         } else {
-            model.addAttribute(type, messages);
+            this.addOnMap(message, model::asMap, model::addAttribute);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addOnMap(Message message, Supplier<Map<String, ?>> asMap,
+            BiFunction<String, Set<Message>, ?> add) {
+        var attrName = message.getType() + "List";
+        var messages = new HashSet<Message>();
+        var map = asMap.get();
+        if (map.containsKey(attrName)) {
+            messages.addAll((Set<Message>) map.get(attrName));
+        }
+        messages.add(message);
+        add.apply(attrName, messages);
     }
 
     // -- Returns Message
@@ -76,6 +91,10 @@ public class MessagesComponent {
 
     public Message error(String code, Object... args) {
         return this.message(ERROR, code, args);
+    }
+
+    public Message error(ObjectError error) {
+        return this.error(error.getDefaultMessage(), error.getArguments());
     }
 
     public Message warning(String code, Object... args) {
@@ -97,8 +116,7 @@ public class MessagesComponent {
     }
 
     public MessageException error(BindingResult result) {
-        return new MessageException(result.getAllErrors().stream().map(e -> this.error(e.getCode(), e.getArguments()))
-                .toArray(Message[]::new));
+        return new MessageException(result.getAllErrors().stream().map(this::error).toArray(Message[]::new));
     }
 
     // -- Source
