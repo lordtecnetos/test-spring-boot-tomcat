@@ -1,5 +1,6 @@
 package com.example.demo.view.component;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -9,7 +10,6 @@ import java.util.function.Supplier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class MessagesComponent {
+public class MessageComponent {
 
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
@@ -32,36 +32,36 @@ public class MessagesComponent {
 
     // -- Model
 
-    public void success(Model model, String code, Object... args) {
+    public <T extends Model> void success(T model, String code, Object... args) {
         this.message(model, SUCCESS, code, args);
     }
 
-    public void error(Model model, String code, Object... args) {
+    public <T extends Model> void error(T model, String code, Object... args) {
         this.message(model, ERROR, code, args);
     }
 
-    public void error(Model model, BindingResult result) {
-        result.getAllErrors().stream().forEach(e -> this.message(model, this.error(e)));
+    public <T extends Model, E extends ObjectError> void error(T model, Collection<E> errors) {
+        errors.stream().forEach(e -> this.message(model, this.error(e)));
     }
 
-    public void error(Model model, ServiceException e) {
+    public <T extends Model> void error(T model, ServiceException e) {
         this.error(model, e.getMessage(), e.getArgs());
     }
 
-    public void warning(Model model, String code, Object... args) {
+    public <T extends Model> void warning(T model, String code, Object... args) {
         this.message(model, WARNING, code, args);
     }
 
-    public void info(Model model, String code, Object... args) {
+    public <T extends Model> void info(T model, String code, Object... args) {
         this.message(model, INFO, code, args);
     }
 
-    public void message(Model model, String type, String code, Object... args) {
+    public <T extends Model> void message(T model, String type, String code, Object... args) {
         var message = this.message(type, code, args);
         this.message(model, message);
     }
 
-    public void message(Model model, Message message) {
+    public <T extends Model> void message(T model, Message message) {
         if (model instanceof RedirectAttributes) {
             var redirect = (RedirectAttributes) model;
             this.addOnMap(message, redirect::getFlashAttributes, redirect::addFlashAttribute);
@@ -72,7 +72,7 @@ public class MessagesComponent {
 
     @SuppressWarnings("unchecked")
     private void addOnMap(Message message, Supplier<Map<String, ?>> asMap,
-            BiFunction<String, Set<Message>, ?> add) {
+            BiFunction<String, Set<Message>, ?> addAttribute) {
         var attrName = message.getType() + "List";
         var messages = new HashSet<Message>();
         var map = asMap.get();
@@ -80,7 +80,7 @@ public class MessagesComponent {
             messages.addAll((Set<Message>) map.get(attrName));
         }
         messages.add(message);
-        add.apply(attrName, messages);
+        addAttribute.apply(attrName, messages);
     }
 
     // -- Returns Message
@@ -93,7 +93,7 @@ public class MessagesComponent {
         return this.message(ERROR, code, args);
     }
 
-    public Message error(ObjectError error) {
+    public <E extends ObjectError> Message error(E error) {
         return this.error(error.getDefaultMessage(), error.getArguments());
     }
 
@@ -115,8 +115,8 @@ public class MessagesComponent {
         return new MessageException(e, this.error(e.getMessage(), e.getArgs()));
     }
 
-    public MessageException error(BindingResult result) {
-        return new MessageException(result.getAllErrors().stream().map(this::error).toArray(Message[]::new));
+    public <E extends ObjectError> MessageException error(Collection<E> errors) {
+        return new MessageException(errors.stream().map(this::error).toArray(Message[]::new));
     }
 
     // -- Source

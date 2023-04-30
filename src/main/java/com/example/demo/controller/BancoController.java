@@ -21,7 +21,8 @@ import com.example.demo.ServiceException;
 import com.example.demo.component.BancoComponent;
 import com.example.demo.dto.LabelValue;
 import com.example.demo.form.BancoForm;
-import com.example.demo.view.component.MessagesComponent;
+import com.example.demo.view.component.MessageComponent;
+import com.example.demo.view.component.ValidationsComponent;
 import com.example.demo.view.model.Message;
 
 import jakarta.validation.Valid;
@@ -32,7 +33,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/banco")
 public class BancoController {
 
-    private final MessagesComponent messages;
+    private final ValidationsComponent validations;
+    private final MessageComponent message;
     private final BancoComponent component;
 
     @GetMapping("/novo")
@@ -59,16 +61,16 @@ public class BancoController {
             Model model, RedirectAttributes redirect) {
 
         if (result.hasErrors()) {
-            messages.error(model, result);
+            message.error(model, result.getAllErrors());
             return "banco/novo";
         }
         try {
             component.salvar(form);
-            messages.success(redirect, "banco.salvo.com.sucesso");
+            message.success(redirect, "banco.salvo.com.sucesso");
             return "redirect:listar";
 
         } catch (ServiceException e) {
-            messages.error(model, e);
+            message.error(model, e);
             return "banco/novo";
         }
     }
@@ -78,14 +80,14 @@ public class BancoController {
             BindingResult result) {
 
         if (result.hasErrors()) {
-            throw messages.error(result);
+            throw message.error(result.getAllErrors());
         }
         try {
             component.salvar(form);
-            return messages.success("salvo.com.sucesso");
+            return message.success("salvo.com.sucesso");
 
         } catch (ServiceException e) {
-            throw messages.error(e);
+            throw message.error(e);
         }
     }
 
@@ -94,16 +96,16 @@ public class BancoController {
             Model model, RedirectAttributes redirect) {
 
         if (result.hasErrors()) {
-            messages.error(model, result);
+            message.error(model, result.getAllErrors());
             return "banco/visualizar";
         }
         try {
             component.alterar(form);
-            messages.success(redirect, "banco.alterado.com.sucesso");
+            message.success(redirect, "banco.alterado.com.sucesso");
             return "redirect:../listar";
 
         } catch (ServiceException e) {
-            messages.error(model, e);
+            message.error(model, e);
             return "banco/visualizar";
         }
     }
@@ -112,11 +114,11 @@ public class BancoController {
     public String excluir(@PathVariable Long codigo, RedirectAttributes redirect) {
         try {
             component.excluir(codigo);
-            messages.success(redirect, "banco.excluido.com.sucesso");
+            message.success(redirect, "banco.excluido.com.sucesso");
             return "redirect:../listar";
 
         } catch (ServiceException e) {
-            messages.error(redirect, e);
+            message.error(redirect, e);
             return "redirect:../visualizar/{codigo}";
         }
     }
