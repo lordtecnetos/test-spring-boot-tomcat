@@ -22,7 +22,6 @@ import com.example.demo.component.BancoComponent;
 import com.example.demo.dto.LabelValue;
 import com.example.demo.form.BancoForm;
 import com.example.demo.view.component.MessageComponent;
-import com.example.demo.view.component.ValidationsComponent;
 import com.example.demo.view.model.Message;
 
 import jakarta.validation.Valid;
@@ -33,7 +32,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/banco")
 public class BancoController {
 
-    private final ValidationsComponent validations;
     private final MessageComponent message;
     private final BancoComponent component;
 
@@ -84,7 +82,7 @@ public class BancoController {
         }
         try {
             component.salvar(form);
-            return message.success("salvo.com.sucesso");
+            return message.success("banco.salvo.com.sucesso");
 
         } catch (ServiceException e) {
             throw message.error(e);
