@@ -1,10 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="/WEB-INF/tld/components.tld" prefix="co"%>
 
 <title>Editar</title>
 
-<div>${error}</div>
+<co:messages />
 
 <form:form action="/banco/alterar/${form.codigo}" method="put" modelAttribute="form">
     <c:import url="_campos.jsp" />

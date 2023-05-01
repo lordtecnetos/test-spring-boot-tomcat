@@ -1,13 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/WEB-INF/tld/components.tld" prefix="co"%>
 
 <title>Lista</title>
 
-<c:forEach var="msg" items="${successList}">
-    <div>
-        <c:out value="${msg.value}" />
-    </div>
-</c:forEach>
+<co:messages />
 
 <a href="/banco/novo">Adicionar</a>
 
