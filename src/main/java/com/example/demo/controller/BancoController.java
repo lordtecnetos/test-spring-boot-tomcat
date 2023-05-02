@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -74,9 +75,7 @@ public class BancoController {
     }
 
     @PostMapping("/salvar-json")
-    public @ResponseBody Message salvarJson(@ModelAttribute("form") @Valid BancoForm form,
-            BindingResult result) {
-
+    public @ResponseBody Message salvarJson(@RequestBody @Valid BancoForm form, BindingResult result) {
         if (result.hasErrors()) {
             throw message.error(result.getAllErrors());
         }
