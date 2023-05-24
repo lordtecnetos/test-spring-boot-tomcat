@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CrudService<T, R extends JpaRepository<T, Long>> {
-    
+public interface CrudService<T extends EntidadePersistente, R extends JpaRepository<T, Long>> {
+
     Optional<T> buscar(Long codigo);
 
     List<T> listar();
